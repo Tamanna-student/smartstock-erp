@@ -1,37 +1,75 @@
 const User = require("../models/User");
-
-// REGISTER USER
+const bcrypt = require("bcryptjs");
 const registerUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+    try {
+        const {
+            fullName,
+            businessName,
+            businessType,
+            phone,
+            email,
+            password,
+            address,
+            gstNumber,
+        } = req.body;
 
-    const userExists = await User.findOne({ email });
+        if (
+            !fullName ||
+            !businessName ||
+            !businessType ||
+            !phone ||
+            !email ||
+            !password
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please fill all required fields",
+            });
+        }
 
-    if (userExists) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists"
-      });
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: "Email is already registered",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await User.create({
+            fullName,
+            businessName,
+            businessType,
+            phone,
+            email,
+            password: hashedPassword,
+            address,
+            gstNumber,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Registration successful",
+            data: {
+                id: user._id,
+                fullName: user.fullName,
+                businessName: user.businessName,
+                email: user.email,
+            },
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-
-    const user = await User.create({
-      name,
-      email,
-      password
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      user
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 };
 
-module.exports = { registerUser };
+module.exports = {
+    registerUser,
+};

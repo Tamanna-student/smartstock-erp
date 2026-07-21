@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
 const healthRoutes = require("./routes/healthRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 connectDB();
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use("/api/health", healthRoutes);
-
+app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
   res.send("SmartStock ERP Backend Running");
 });

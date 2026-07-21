@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const Inventory = require("../models/Inventory");
 
 // Get All Products
 const getProducts = async (req, res) => {
@@ -118,13 +119,12 @@ const addProduct = async (req, res) => {
             productName,
             category,
             price,
-            quantity,
             unit,
             description
         } = req.body;
 
 
-        if (!productName || !category || !price || !quantity) {
+        if (!productName || !category || !price) {
             return res.status(400).json({
                 success: false,
                 message: "Please fill all required fields",
@@ -136,11 +136,17 @@ const addProduct = async (req, res) => {
             productName,
             category,
             price,
-            quantity,
             unit,
             description,
             createdBy: req.user.id,
         });
+
+        await Inventory.create({
+    product: product._id,
+    currentStock: 0,
+    minimumStock: 10,
+    updatedBy: req.user.id,
+});
 
 
         res.status(201).json({

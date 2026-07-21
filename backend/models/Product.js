@@ -19,11 +19,7 @@ const productSchema = new mongoose.Schema(
             required: [true, "Price is required"],
         },
 
-        quantity: {
-            type: Number,
-            required: [true, "Quantity is required"],
-            default: 0,
-        },
+        
 
         unit: {
             type: String,

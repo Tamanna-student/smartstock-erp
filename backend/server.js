@@ -7,6 +7,8 @@ const connectDB = require("./config/db");
 const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
 const productRoutes = require("./routes/productRoutes");
+const inventoryRoutes = require("./routes/inventoryRoutes");
+const billRoutes = require("./routes/billRoutes");
 
 dotenv.config();
 connectDB();
@@ -20,6 +22,8 @@ app.use(morgan("dev"));
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/inventory", inventoryRoutes);
+app.use("/api/bills", billRoutes);
 app.get("/", (req, res) => {
   res.send("SmartStock ERP Backend Running");
 });

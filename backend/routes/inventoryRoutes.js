@@ -10,11 +10,11 @@ const {
 } = require("../controllers/inventoryController");
 
 
-router.post(
-    "/update",
-    protect,
-    updateStock
-);
+router.put(
+    "/",
+     protect, 
+     updateStock
+    );
 
 router.get(
     "/",

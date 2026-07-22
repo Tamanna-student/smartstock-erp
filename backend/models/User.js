@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
+    
 
     address: {
       type: String,
@@ -55,9 +56,17 @@ const userSchema = new mongoose.Schema(
     },
 
     role: {
-      type: String,
-      default: "admin",
-    },
+    type: String,
+    enum: ["admin", "employee"],
+    default: "admin",
+},
+
+    ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+},
+
   },
   {
     timestamps: true,

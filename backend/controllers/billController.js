@@ -3,6 +3,10 @@ const Inventory = require("../models/Inventory");
 const createBill = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const { customerName, items } = req.body;
 
@@ -13,7 +17,9 @@ const createBill = async (req, res) => {
             });
         }
 
-        const lastBill = await Bill.findOne().sort({ createdAt: -1 });
+       const lastBill = await Bill.findOne({
+    createdBy: ownerId
+}).sort({ createdAt: -1 });
 
 let invoiceNumber = "INV-000001";
 
@@ -39,9 +45,9 @@ if (lastBill && lastBill.invoiceNumber) {
 for (const item of items) {
 
     const inventory = await Inventory.findOne({
-        product: item.product,
-        updatedBy: req.user.id,
-    });
+    product: item.product,
+    updatedBy: ownerId,
+});
 
     if (!inventory) {
         return res.status(404).json({
@@ -73,7 +79,7 @@ for (const item of items) {
 
     totalAmount,
 
-    createdBy:req.user.id
+    createdBy:ownerId
 
 });
 
@@ -85,7 +91,7 @@ for (const item of items) {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,
@@ -99,9 +105,13 @@ for (const item of items) {
 const getBills = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const bills = await Bill.find({
-            createdBy: req.user.id
+            createdBy: ownerId
         })
         .populate("items.product", "productName category price unit")
         .sort({ createdAt: -1 });
@@ -114,7 +124,7 @@ const getBills = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,
@@ -127,10 +137,14 @@ const getBills = async (req, res) => {
 const getBillById = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const bill = await Bill.findOne({
             _id: req.params.id,
-            createdBy: req.user.id,
+            createdBy: ownerId,
         }).populate("items.product", "productName category price unit");
 
         if (!bill) {
@@ -147,7 +161,7 @@ const getBillById = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,

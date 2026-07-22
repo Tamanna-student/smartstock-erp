@@ -10,6 +10,8 @@ const productRoutes = require("./routes/productRoutes");
 const inventoryRoutes = require("./routes/inventoryRoutes");
 const billRoutes = require("./routes/billRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const employeeRoutes = require("./routes/employeeRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 
 dotenv.config();
 connectDB();
@@ -26,9 +28,14 @@ app.use("/api/products", productRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/employees", employeeRoutes);
+app.use("/api/reports", reportRoutes);
 app.get("/", (req, res) => {
-  res.send("SmartStock ERP Backend Running");
-});
+    res.status(200).json({
+        success: true,
+        message: "SmartStock ERP Backend Running",
+    });
+}); 
 
 const PORT = process.env.PORT || 5000;
 

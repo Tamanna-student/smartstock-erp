@@ -5,6 +5,10 @@ const Inventory = require("../models/Inventory");
 const updateStock = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const {
             productId,
@@ -23,7 +27,7 @@ const updateStock = async (req, res) => {
 
         let inventory = await Inventory.findOne({
             product: productId,
-            updatedBy: req.user.id
+            updatedBy: ownerId
         });
 
 
@@ -54,7 +58,7 @@ await inventory.save();
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,
@@ -67,9 +71,13 @@ await inventory.save();
 const getInventory = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const inventory = await Inventory.find({
-            updatedBy: req.user.id
+            updatedBy: ownerId
         }).populate("product");
 
 
@@ -81,7 +89,7 @@ const getInventory = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+       console.error(error);
 
         res.status(500).json({
             success: false,
@@ -94,9 +102,13 @@ const getInventory = async (req, res) => {
 const getLowStock = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const lowStockProducts = await Inventory.find({
-            updatedBy: req.user.id,
+            updatedBy: ownerId,
             $expr: {
                 $lte: [
                     "$currentStock",
@@ -115,7 +127,7 @@ const getLowStock = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,

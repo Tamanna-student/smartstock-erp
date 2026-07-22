@@ -1,28 +1,33 @@
 const Product = require("../models/Product");
 const Inventory = require("../models/Inventory");
 const Bill = require("../models/Bill");
+const mongoose = require("mongoose");
 
 const getDashboardSummary = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 //totalProducts
         const totalProducts = await Product.countDocuments({
-    createdBy: req.user.id,
+    createdBy: ownerId,
 });
 //totalBills
 const totalBills = await Bill.countDocuments({
-    createdBy: req.user.id,
+    createdBy: ownerId,
 });
 //lowStockItems
 const lowStockItems = await Inventory.countDocuments({
-    updatedBy: req.user.id,
+    updatedBy: ownerId,
     $expr: {
         $lte: ["$currentStock", "$minimumStock"],
     },
 });
 //Total Stock Value
 const inventory = await Inventory.find({
-    updatedBy: req.user.id,
+    updatedBy: ownerId,
 }).populate("product", "price");
 
 let totalStockValue = 0;
@@ -37,7 +42,7 @@ const today = new Date();
 today.setHours(0, 0, 0, 0);
 
 const todayBills = await Bill.find({
-    createdBy: req.user.id,
+    createdBy: ownerId,
     createdAt: {
         $gte: today,
     },
@@ -57,7 +62,7 @@ const firstDayOfMonth = new Date(
 );
 
 const monthlyBills = await Bill.find({
-    createdBy: req.user.id,
+    createdBy: ownerId,
     createdAt: {
         $gte: firstDayOfMonth,
     },
@@ -71,7 +76,7 @@ monthlyBills.forEach((bill) => {
 
 //Recent Bills
 const recentBills = await Bill.find({
-    createdBy: req.user.id,
+    createdBy: ownerId,
 })
 .sort({ createdAt: -1 })
 .limit(5)
@@ -82,7 +87,7 @@ const topSellingProducts = await Bill.aggregate([
 
     {
         $match: {
-            createdBy: req.user._id,
+            createdBy:  new mongoose.Types.ObjectId(ownerId),
         },
     },
 
@@ -137,7 +142,7 @@ const monthlySalesData = await Bill.aggregate([
 
     {
         $match: {
-            createdBy: req.user._id,
+            createdBy: new mongoose.Types.ObjectId(ownerId),
         },
     },
 
@@ -192,7 +197,7 @@ return res.status(200).json({
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,

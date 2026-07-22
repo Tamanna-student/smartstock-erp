@@ -28,7 +28,30 @@ const registerUser = async (req, res) => {
             });
         }
 
-        const existingUser = await User.findOne({ email });
+       const existingUser = await User.findOne({
+    $or: [
+        { email },
+        { phone },
+    ],
+});
+
+if (existingUser) {
+
+    if (existingUser.email === email) {
+        return res.status(409).json({
+            success: false,
+            message: "Email is already registered",
+        });
+    }
+
+    if (existingUser.phone === phone) {
+        return res.status(409).json({
+            success: false,
+            message: "Phone number is already registered",
+        });
+    }
+
+}
 
         if (existingUser) {
             return res.status(409).json({
@@ -40,15 +63,17 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
-            fullName,
-            businessName,
-            businessType,
-            phone,
-            email,
-            password: hashedPassword,
-            address,
-            gstNumber,
-        });
+    fullName,
+    businessName,
+    businessType,
+    phone,
+    email,
+    password: hashedPassword,
+    address,
+    gstNumber,
+    role: "admin",
+    ownerId: null,
+});
 
         res.status(201).json({
             success: true,
@@ -84,12 +109,12 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
+       if (!user) {
+    return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+    });
+}
 
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -101,15 +126,16 @@ const loginUser = async (req, res) => {
         }
 
         const token = jwt.sign(
-            {
-                id: user._id,
-                role: user.role,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "7d",
-            }
-        );
+    {
+        id: user._id,
+        role: user.role,
+        ownerId: user.ownerId,
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: "7d",
+    }
+);
 
         res.status(200).json({
             success: true,

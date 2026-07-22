@@ -6,8 +6,13 @@ const getProducts = async (req, res) => {
 
     try {
 
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
+
         const products = await Product.find({
-            createdBy: req.user.id
+            createdBy:  ownerId
         });
 
 
@@ -20,7 +25,7 @@ const getProducts = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+       console.error(error);
 
         res.status(500).json({
             success: false,
@@ -32,10 +37,14 @@ const getProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const product = await Product.findOne({
             _id: req.params.id,
-            createdBy: req.user.id
+            createdBy:  ownerId
         });
 
 
@@ -48,12 +57,13 @@ const updateProduct = async (req, res) => {
 
 
         const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true
-            }
-        );
+    req.params.id,
+    req.body,
+    {
+        new: true,
+        runValidators: true,
+    }
+);
 
 
         res.status(200).json({
@@ -65,7 +75,7 @@ const updateProduct = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,
@@ -77,10 +87,14 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
 
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const product = await Product.findOne({
             _id: req.params.id,
-            createdBy: req.user.id
+            createdBy:  ownerId
         });
 
 
@@ -92,8 +106,7 @@ const deleteProduct = async (req, res) => {
         }
 
 
-        await Product.findByIdAndDelete(req.params.id);
-
+        await product.deleteOne();
 
         res.status(200).json({
             success: true,
@@ -103,7 +116,7 @@ const deleteProduct = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+        console.error(error);
 
         res.status(500).json({
             success: false,
@@ -114,6 +127,10 @@ const deleteProduct = async (req, res) => {
 // Add Product
 const addProduct = async (req, res) => {
     try {
+        const ownerId =
+    req.user.role === "admin"
+        ? req.user.id
+        : req.user.ownerId;
 
         const {
             productName,
@@ -138,14 +155,14 @@ const addProduct = async (req, res) => {
             price,
             unit,
             description,
-            createdBy: req.user.id,
+            createdBy: ownerId,
         });
 
         await Inventory.create({
     product: product._id,
     currentStock: 0,
     minimumStock: 10,
-    updatedBy: req.user.id,
+    updatedBy:  ownerId ,
 });
 
 
@@ -158,7 +175,7 @@ const addProduct = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
+       console.error(error);
 
         res.status(500).json({
             success: false,

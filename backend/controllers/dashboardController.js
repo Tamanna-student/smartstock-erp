@@ -33,7 +33,14 @@ const inventory = await Inventory.find({
 let totalStockValue = 0;
 
 inventory.forEach((item) => {
-    totalStockValue += item.currentStock * item.product.price;
+
+    if (item.product) {
+
+        totalStockValue +=
+            item.currentStock * item.product.price;
+
+    }
+
 });
 
 //Today's Revenue   

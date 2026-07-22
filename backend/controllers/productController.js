@@ -108,6 +108,10 @@ const deleteProduct = async (req, res) => {
 
         await product.deleteOne();
 
+        await Inventory.findOneAndDelete({
+    product: req.params.id,
+});
+
         res.status(200).json({
             success: true,
             message: "Product deleted successfully",

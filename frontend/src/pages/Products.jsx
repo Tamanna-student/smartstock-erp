@@ -4,6 +4,8 @@ import API from "../api/axios";
 
 function Products() {
 
+    const role = localStorage.getItem("role");
+
 
     const [products, setProducts] = useState([]);
 
@@ -12,6 +14,10 @@ function Products() {
 
     const [showForm, setShowForm] = useState(false);
 
+
+    const [editMode, setEditMode] = useState(false);
+
+const [editId, setEditId] = useState("");
 
     const [formData, setFormData] = useState({
 
@@ -22,6 +28,7 @@ function Products() {
         description: ""
 
     });
+
 
 
 
@@ -122,11 +129,21 @@ function Products() {
 
 
     };
-    const deleteProduct = async(id)=>{
+   const deleteProduct = async(id)=>{
+
+    const confirmDelete = window.confirm(
+        "Are you sure you want to delete this product?"
+    );
+
+    if(!confirmDelete){
+        return;
+    }
 
     try{
 
         await API.delete(`/products/${id}`);
+
+        alert("Product Deleted Successfully");
 
         getProducts();
 
@@ -134,6 +151,79 @@ function Products() {
     catch(error){
 
         console.log(error);
+
+        alert("Failed to Delete Product");
+
+    }
+
+};
+
+const editProduct = (product) => {
+
+    setEditMode(true);
+
+    setEditId(product._id);
+
+    setShowForm(true);
+
+    setFormData({
+
+        productName: product.productName,
+
+        category: product.category,
+
+        price: product.price,
+
+        unit: product.unit,
+
+        description: product.description
+
+    });
+
+};
+const updateProduct = async () => {
+
+    try {
+
+        await API.put(
+
+            `/products/${editId}`,
+
+            formData
+
+        );
+
+        alert("Product Updated Successfully");
+
+        setEditMode(false);
+
+        setEditId("");
+
+        setShowForm(false);
+
+        setFormData({
+
+            productName: "",
+
+            category: "",
+
+            price: "",
+
+            unit: "",
+
+            description: ""
+
+        });
+
+        getProducts();
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        alert("Failed to Update Product");
 
     }
 
@@ -175,17 +265,20 @@ function Products() {
 
 
 
-                <button
+               {
+    role === "admin" && (
 
-                className="btn btn-primary"
+        <button
+            className="btn btn-primary"
+            onClick={() => setShowForm(!showForm)}
+        >
 
-                onClick={()=>setShowForm(!showForm)}
+            Add Product
 
-                >
+        </button>
 
-                    Add Product
-
-                </button>
+    )
+}
 
 
             </div>
@@ -194,9 +287,8 @@ function Products() {
 
 
 
-
-            {
-                showForm && (
+{
+    role === "admin" && showForm && (
 
 
                 <div className="card shadow p-3 mb-4">
@@ -298,18 +390,22 @@ function Products() {
 
 
 
+<button
+    className="btn btn-success"
+    onClick={
+        editMode
+            ? updateProduct
+            : addProduct
+    }
+>
 
-                    <button
+    {
+        editMode
+            ? "Update Product"
+            : "Save Product"
+    }
 
-                    className="btn btn-success"
-
-                    onClick={addProduct}
-
-                    >
-
-                    Save Product
-
-                    </button>
+</button>
 
 
 
@@ -392,16 +488,29 @@ function Products() {
                             <td>
                                 {product.unit}
                             </td>
-                            <td>
+          <td>
 
-                                <button
-                                className="btn btn-danger btn-sm"
-                                onClick={()=>deleteProduct(product._id)}
-                                >
-                                Delete
-                                </button>
+{
+    role === "admin" && (
+        <>
+            <button
+                className="btn btn-warning btn-sm me-2"
+                onClick={() => editProduct(product)}
+            >
+                Edit
+            </button>
 
-                                </td>
+            <button
+                className="btn btn-danger btn-sm"
+                onClick={() => deleteProduct(product._id)}
+            >
+                Delete
+            </button>
+        </>
+    )
+}
+
+</td>
 
 
                         </tr>

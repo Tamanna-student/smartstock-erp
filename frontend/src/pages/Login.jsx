@@ -2,6 +2,7 @@ import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
+
 function Login() {
 const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -19,10 +20,21 @@ const navigate = useNavigate();
 
             console.log(response.data);
 
+           localStorage.removeItem("token");
+localStorage.removeItem("role");
+localStorage.removeItem("user");
+
             localStorage.setItem(
-                "token",
-                response.data.token
-            );
+    "token",
+    response.data.token
+);
+
+localStorage.setItem(
+    "role",
+    response.data.user.role
+);
+
+
 
             alert("Login Successful");
             navigate("/dashboard");
@@ -68,6 +80,21 @@ const navigate = useNavigate();
                 <button type="submit">
                     Login
                 </button>
+
+                <p>
+
+New Business Owner?
+
+<button
+className="btn btn-link"
+onClick={()=>navigate("/register")}
+>
+
+Create Account
+
+</button>
+
+</p>
 
 
             </form>

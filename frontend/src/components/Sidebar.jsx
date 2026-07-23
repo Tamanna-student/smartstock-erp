@@ -8,10 +8,12 @@ function Sidebar(){
 const logout = () => {
 
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
 
     navigate("/");
 
 };
+const role = localStorage.getItem("role");
 
     return (
 
@@ -69,22 +71,36 @@ const logout = () => {
                 </li>
 
 
-                <li>
-                    <Link 
-                    className="nav-link text-white"
-                    to="/employees">
-                        Employees
-                    </Link>
-                </li>
+                {role === "admin" && (
 
+<>
+    <li>
 
-                <li>
-                    <Link 
-                    className="nav-link text-white"
-                    to="/reports">
-                        Reports
-                    </Link>
-                </li>
+        <Link
+            className="nav-link text-white"
+            to="/employees">
+
+            Employees
+
+        </Link>
+
+    </li>
+
+    <li>
+
+        <Link
+            className="nav-link text-white"
+            to="/reports">
+
+            Reports
+
+        </Link>
+
+    </li>
+
+</>
+
+)}
 
                 
 

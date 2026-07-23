@@ -37,6 +37,14 @@ const getProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
         const ownerId =
     req.user.role === "admin"
         ? req.user.id
@@ -87,6 +95,14 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
         const ownerId =
     req.user.role === "admin"
         ? req.user.id
@@ -131,6 +147,15 @@ const deleteProduct = async (req, res) => {
 // Add Product
 const addProduct = async (req, res) => {
     try {
+
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
         const ownerId =
     req.user.role === "admin"
         ? req.user.id

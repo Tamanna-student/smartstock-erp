@@ -12,6 +12,15 @@ const getSalesReport = async (req, res) => {
 
     try {
 
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
+
         const ownerId = getOwnerId(req);
 
         const bills = await Bill.find({
@@ -42,6 +51,14 @@ const getSalesReport = async (req, res) => {
 // Revenue Report
 const getRevenueReport = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
 
         const ownerId = getOwnerId(req);
 
@@ -75,6 +92,14 @@ const getRevenueReport = async (req, res) => {
 // Inventory Report
 const getInventoryReport = async (req, res) => {
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
 
         const ownerId = getOwnerId(req);
 
@@ -103,6 +128,14 @@ const getInventoryReport = async (req, res) => {
 const searchProducts = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
 
         const ownerId = getOwnerId(req);
         const keyword = req.query.keyword || "";
@@ -137,6 +170,14 @@ const searchProducts = async (req, res) => {
 const searchBills = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success: false,
+        message: "Access Denied"
+    });
+
+}
 
         const ownerId = getOwnerId(req);
         const keyword = req.query.keyword || "";

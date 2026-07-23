@@ -5,6 +5,14 @@ const bcrypt = require("bcryptjs");
 const addEmployee = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
 
         const {
             fullName,
@@ -97,6 +105,14 @@ const addEmployee = async (req, res) => {
 const getEmployees = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
 
         const employees = await User.find({
             role: "employee",
@@ -126,6 +142,14 @@ const getEmployees = async (req, res) => {
 const updateEmployee = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
 
         const employee = await User.findOne({
             _id: req.params.id,
@@ -146,11 +170,7 @@ const updateEmployee = async (req, res) => {
             address,
         } = req.body;
 
-        employee.fullName = fullName || employee.fullName;
-        employee.phone = phone || employee.phone;
-        employee.address = address || employee.address;
-
-
+        
         if (phone && phone !== employee.phone) {
 
     const existingPhone = await User.findOne({
@@ -166,6 +186,11 @@ const updateEmployee = async (req, res) => {
     }
 
 }
+        employee.fullName = fullName || employee.fullName;
+        employee.phone = phone || employee.phone;
+        employee.address = address || employee.address;
+
+
 
         await employee.save();
 
@@ -200,6 +225,14 @@ const updateEmployee = async (req, res) => {
 const deleteEmployee = async (req, res) => {
 
     try {
+        if (req.user.role !== "admin") {
+
+    return res.status(403).json({
+        success:false,
+        message:"Access Denied"
+    });
+
+}
 
         const employee = await User.findOne({
             _id: req.params.id,

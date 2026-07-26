@@ -348,399 +348,580 @@ function Billing() {
 
 
 
-    return (
+return (
+
+<div className="w-100">
+
+    {/* Header */}
+
+    <div className="d-flex justify-content-between align-items-center mb-4">
 
         <div>
 
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2
+                style={{
+                    fontWeight:700,
+                    color:"#111827"
+                }}
+            >
+                Billing
+            </h2>
 
-                <h2>Billing Management</h2>
+            <p
+                style={{
+                    color:"#6B7280",
+                    marginBottom:0
+                }}
+            >
+                Create invoices and manage customer billing.
+            </p>
 
-            </div>
+        </div>
 
-
-
-            <div className="card shadow p-4 mb-4">
-
-                <h4 className="mb-3">
-
-                    Create New Bill
-
-                </h4>
-
+    </div>
 
 
-                <input
 
-                    className="form-control mb-3"
 
-                    placeholder="Customer Name"
 
-                    name="customerName"
+    {/* Create Bill Card */}
 
-                    value={formData.customerName}
+    <div className="card-modern mb-4">
+
+        <h4
+            style={{
+                fontWeight:600,
+                marginBottom:"25px"
+            }}
+        >
+            Create Invoice
+        </h4>
+
+        <input
+
+            className="form-control modern-input mb-3"
+
+            placeholder="Customer Name"
+
+            name="customerName"
+
+            value={formData.customerName}
+
+            onChange={handleChange}
+
+        />
+
+
+
+        <div className="row g-3">
+
+            <div className="col-lg-5">
+
+                <select
+
+                    className="form-control modern-input"
+
+                    name="product"
+
+                    value={formData.product}
 
                     onChange={handleChange}
 
-                />
-
-
-
-                <div className="row">
-
-                    <div className="col-md-5">
-
-                        <select
-
-                            className="form-control"
-
-                            name="product"
-
-                            value={formData.product}
-
-                            onChange={handleChange}
-
-                        >
-
-                            <option value="">
-
-                                Select Product
-
-                            </option>
-
-                            {
-
-                                products.map((product)=>(
-
-                                    <option
-
-                                        key={product._id}
-
-                                        value={product._id}
-
-                                    >
-
-                                        {product.productName}
-
-                                    </option>
-
-                                ))
-
-                            }
-
-                        </select>
-
-                    </div>
-
-
-
-                    <div className="col-md-2">
-
-                        <input
-
-                            className="form-control"
-
-                            value={formData.price}
-
-                            readOnly
-
-                            placeholder="Price"
-
-                        />
-
-                    </div>
-
-
-
-                    <div className="col-md-2">
-
-                        <input
-
-                            className="form-control"
-
-                            type="number"
-
-                            min="1"
-
-                            name="quantity"
-
-                            value={formData.quantity}
-
-                            onChange={handleChange}
-
-                        />
-
-                    </div>
-
-
-
-                    <div className="col-md-3">
-
-                        <button
-
-                            className="btn btn-primary w-100"
-
-                            onClick={addItem}
-
-                        >
-
-                            Add Item
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-
-                <table className="table table-bordered mt-4">
-
-                    <thead className="table-dark">
-
-                        <tr>
-
-                            <th>Product</th>
-
-                            <th>Price</th>
-
-                            <th>Qty</th>
-
-                            <th>Total</th>
-
-                            <th>Action</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {
-
-                            billItems.length===0 ?
-
-                            (
-
-                                <tr>
-
-                                    <td
-
-                                        colSpan="5"
-
-                                        className="text-center"
-
-                                    >
-
-                                        No Items Added
-
-                                    </td>
-
-                                </tr>
-
-                            )
-
-                            :
-
-                            billItems.map((item,index)=>(
-
-                                <tr key={index}>
-
-                                    <td>
-
-                                        {item.productName}
-
-                                    </td>
-
-                                    <td>
-
-                                        ₹ {item.price}
-
-                                    </td>
-
-                                    <td>
-
-                                        {item.quantity}
-
-                                    </td>
-
-                                    <td>
-
-                                        ₹ {item.price * item.quantity}
-
-                                    </td>
-
-                                    <td>
-
-                                        <button
-
-                                            className="btn btn-danger btn-sm"
-
-                                            onClick={()=>
-
-                                                removeItem(index)
-
-                                            }
-
-                                        >
-
-                                            Remove
-
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            ))
-
-                        }
-
-                    </tbody>
-
-                </table>
-
-
-
-                <h4 className="text-end">
-
-                    Grand Total : ₹ {grandTotal}
-
-                </h4>
-
-
-
-                <button
-
-                    className="btn btn-success mt-3"
-
-                    onClick={createBill}
-
                 >
 
-                    Generate Bill
+                    <option value="">
 
-                </button>
+                        Select Product
 
-            </div>
-
-
-
-            <h3 className="mb-3">
-
-                Bill History
-
-            </h3>
-
-
-
-            <table className="table table-bordered shadow">
-
-                <thead className="table-dark">
-
-                    <tr>
-
-                        <th>Invoice</th>
-
-                        <th>Customer</th>
-
-                        <th>Total</th>
-
-                        <th>Status</th>
-
-                        <th>Date</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
+                    </option>
 
                     {
 
-                        bills.length===0 ?
+                        products.map(product=>(
 
-                        (
+                            <option
 
-                            <tr>
+                                key={product._id}
 
-                                <td
+                                value={product._id}
 
-                                    colSpan="5"
+                            >
 
-                                    className="text-center"
+                                {product.productName}
 
-                                >
-
-                                    No Bills Found
-
-                                </td>
-
-                            </tr>
-
-                        )
-
-                        :
-
-                        bills.map((bill)=>(
-
-                            <tr key={bill._id}>
-
-                                <td>
-
-                                    {bill.invoiceNumber}
-
-                                </td>
-
-                                <td>
-
-                                    {bill.customerName}
-
-                                </td>
-
-                                <td>
-
-                                    ₹ {bill.totalAmount}
-
-                                </td>
-
-                                <td>
-
-                                    <span className="badge bg-success">
-
-                                        {bill.paymentStatus || "Paid"}
-
-                                    </span>
-
-                                </td>
-
-                                <td>
-
-                                    {
-
-                                        new Date(
-
-                                            bill.createdAt
-
-                                        ).toLocaleDateString()
-
-                                    }
-
-                                </td>
-
-                            </tr>
+                            </option>
 
                         ))
 
                     }
 
-                </tbody>
+                </select>
 
-            </table>
+            </div>
+
+
+
+            <div className="col-lg-2">
+
+                <input
+
+                    className="form-control modern-input"
+
+                    value={formData.price}
+
+                    readOnly
+
+                    placeholder="Price"
+
+                />
+
+            </div>
+
+
+
+            <div className="col-lg-2">
+
+                <input
+
+                    className="form-control modern-input"
+
+                    type="number"
+
+                    min="1"
+
+                    name="quantity"
+
+                    value={formData.quantity}
+
+                    onChange={handleChange}
+
+                />
+
+            </div>
+
+
+
+            <div className="col-lg-3">
+
+                <button
+
+                    className="btn modern-btn-primary w-100"
+
+                    onClick={addItem}
+
+                >
+
+                    Add Item
+
+                </button>
+
+            </div>
 
         </div>
 
-    );
+
+
+
+
+        {/* Items Table */}
+
+        <div className="mt-4">
+
+    <h5
+        style={{
+            fontWeight: 600,
+            marginBottom: "20px"
+        }}
+    >
+        Added Items
+    </h5>
+
+    {
+        billItems.length === 0 ?
+
+        (
+            <div
+                className="card-modern text-center"
+                style={{
+                    color: "#6B7280"
+                }}
+            >
+
+                No Items Added
+
+            </div>
+        )
+
+        :
+
+        billItems.map((item, index) => (
+
+            <div
+                key={index}
+                className="card-modern mb-3 d-flex justify-content-between align-items-center"
+            >
+
+                <div>
+
+                    <h5
+                        style={{
+                            marginBottom: "8px",
+                            fontWeight: 600
+                        }}
+                    >
+                        📦 {item.productName}
+                    </h5>
+
+                    <p
+                        style={{
+                            margin: 0,
+                            color: "#6B7280"
+                        }}
+                    >
+                        Quantity : <b>{item.quantity}</b>
+                    </p>
+
+                    <p
+                        style={{
+                            margin: 0,
+                            color: "#6B7280"
+                        }}
+                    >
+                        Price : ₹ {item.price}
+                    </p>
+
+                </div>
+
+
+
+                <div className="text-end">
+
+                    <h4
+                        style={{
+                            color: "#4F46E5",
+                            fontWeight: 700
+                        }}
+                    >
+                        ₹ {item.price * item.quantity}
+                    </h4>
+
+                    <button
+
+                        className="btn btn-outline-danger btn-sm mt-2"
+
+                        onClick={() => removeItem(index)}
+
+                    >
+
+                        Remove
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        ))
+    }
+
+</div>
+
+
+
+
+
+        {/* Grand Total */}
+
+       <div className="d-flex justify-content-between align-items-center mt-4">
+
+    <div
+        className="card-modern"
+        style={{
+            width: "260px",
+            padding: "18px 24px",
+            background: "linear-gradient(135deg,#4F46E5,#6366F1)",
+            color: "white"
+        }}
+    >
+
+        <p
+            style={{
+                margin: 0,
+                fontSize: "14px",
+                opacity: .9
+            }}
+        >
+            Grand Total
+        </p>
+
+        <h3
+            style={{
+                margin: "5px 0 0",
+                fontWeight: 700
+            }}
+        >
+            ₹ {grandTotal}
+        </h3>
+
+    </div>
+
+
+
+    <button
+
+        className="btn modern-btn-success"
+
+        style={{
+             width: "260px",
+            padding: "18px 24px",
+            background: "red",
+            color: "white",
+            height: "52px",
+            fontWeight: 600,
+            fontSize: "16px"
+        }}
+
+        onClick={createBill}
+
+    >
+
+        Generate Bill
+
+    </button>
+
+</div>
+
+    </div>
+
+
+<div className="row g-4 mb-4">
+
+    <div className="col-lg-4">
+
+        <div className="dashboard-card">
+
+            <div className="dashboard-icon blue">
+
+                📄
+
+            </div>
+
+            <div>
+
+                <p className="dashboard-title">
+
+                    Total Bills
+
+                </p>
+
+                <h2>
+
+                    {bills.length}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <div className="col-lg-4">
+
+        <div className="dashboard-card">
+
+            <div className="dashboard-icon green">
+
+                💰
+
+            </div>
+
+            <div>
+
+                <p className="dashboard-title">
+
+                    Revenue
+
+                </p>
+
+                <h2>
+
+                    ₹ {grandTotal}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <div className="col-lg-4">
+
+        <div className="dashboard-card">
+
+            <div className="dashboard-icon orange">
+
+                📦
+
+            </div>
+
+            <div>
+
+                <p className="dashboard-title">
+
+                    Items
+
+                </p>
+
+                <h2>
+
+                    {billItems.length}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+    {/* Bill History */}
+
+    <h3
+
+        style={{
+
+            fontWeight:600,
+
+            marginBottom:"20px"
+
+        }}
+
+    >
+
+        Recent Bills
+
+    </h3>
+
+
+
+    <div className="card-modern">
+
+        <table className="table table-hover align-middle modern-table">
+
+            <thead className="table-light">
+
+                <tr>
+
+                    <th>Invoice</th>
+
+                    <th>Customer</th>
+
+                    <th>Total</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {
+
+                    bills.length===0 ?
+
+                    (
+
+                        <tr>
+
+                            <td
+                                colSpan="5"
+                                className="text-center text-muted"
+                            >
+
+                                No Bills Found
+
+                            </td>
+
+                        </tr>
+
+                    )
+
+                    :
+
+                    bills.map((bill)=>(
+
+                        <tr key={bill._id}>
+
+                            <td>{bill.invoiceNumber}</td>
+
+                            <td>{bill.customerName}</td>
+
+                            <td>₹ {bill.totalAmount}</td>
+
+                            <td>
+
+                                <span
+className="badge"
+style={{
+background:"#DCFCE7",
+color:"#166534",
+padding:"8px 14px",
+fontWeight:600,
+borderRadius:"10px"
+}}
+>
+
+                                    {bill.paymentStatus || "Paid"}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {
+
+                                    new Date(
+
+                                        bill.createdAt
+
+                                    ).toLocaleDateString()
+
+                                }
+
+                            </td>
+
+                        </tr>
+
+                    ))
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+);
 
 }
 

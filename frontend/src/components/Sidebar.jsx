@@ -1,125 +1,127 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+    FaTachometerAlt,
+    FaBoxOpen,
+    FaWarehouse,
+    FaFileInvoiceDollar,
+    FaUsers,
+    FaChartBar,
+    FaSignOutAlt
+} from "react-icons/fa";
 
+function Sidebar() {
 
-function Sidebar(){
     const navigate = useNavigate();
 
+    const role = localStorage.getItem("role");
 
-const logout = () => {
+    const logout = () => {
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
 
-    navigate("/");
+        navigate("/");
 
-};
-const role = localStorage.getItem("role");
+    };
 
     return (
 
-        <div className="bg-dark text-white p-3"
-             style={{
-                width:"250px",
-                minHeight:"100vh"
-             }}>
+        <div className="sidebar">
 
+            <div>
 
-            <h3>
-                SmartStock
-            </h3>
+                <div className="logo">
 
+                    SmartStock
 
-            <hr/>
+                </div>
 
+                <div className="logo-subtitle">
 
-            <ul className="nav flex-column">
+                    ERP Management
 
+                </div>
 
-                <li className="nav-item">
-                    <Link 
-                    className="nav-link text-white"
-                    to="/dashboard">
-                        Dashboard
-                    </Link>
-                </li>
+                <div className="menu">
 
+                    <NavLink
+                        to="/dashboard"
+                        className="menu-item"
+                    >
+                        <FaTachometerAlt />
+                        <span>Dashboard</span>
+                    </NavLink>
 
-                <li>
-                    <Link 
-                    className="nav-link text-white"
-                    to="/products">
-                        Products
-                    </Link>
-                </li>
+                    <NavLink
+                        to="/products"
+                        className="menu-item"
+                    >
+                        <FaBoxOpen />
+                        <span>Products</span>
+                    </NavLink>
 
+                    <NavLink
+                        to="/inventory"
+                        className="menu-item"
+                    >
+                        <FaWarehouse />
+                        <span>Inventory</span>
+                    </NavLink>
 
-                <li>
-                    <Link 
-                    className="nav-link text-white"
-                    to="/inventory">
-                        Inventory
-                    </Link>
-                </li>
+                    <NavLink
+                        to="/billing"
+                        className="menu-item"
+                    >
+                        <FaFileInvoiceDollar />
+                        <span>Billing</span>
+                    </NavLink>
 
+                    {role === "admin" && (
 
-                <li>
-                    <Link 
-                    className="nav-link text-white"
-                    to="/billing">
-                        Billing
-                    </Link>
-                </li>
+                        <>
 
+                            <NavLink
+                                to="/employees"
+                                className="menu-item"
+                            >
+                                <FaUsers />
+                                <span>Employees</span>
+                            </NavLink>
 
-                {role === "admin" && (
+                            <NavLink
+                                to="/reports"
+                                className="menu-item"
+                            >
+                                <FaChartBar />
+                                <span>Reports</span>
+                            </NavLink>
 
-<>
-    <li>
+                        </>
 
-        <Link
-            className="nav-link text-white"
-            to="/employees">
+                    )}
 
-            Employees
+                </div>
 
-        </Link>
+            </div>
 
-    </li>
-
-    <li>
-
-        <Link
-            className="nav-link text-white"
-            to="/reports">
-
-            Reports
-
-        </Link>
-
-    </li>
-
-</>
-
-)}
-
-                
-
-
-            </ul>
             <button
-className="btn btn-danger mt-3"
-onClick={logout}
->
-Logout
-</button>
-            
 
+                className="logout-btn"
+
+                onClick={logout}
+
+            >
+
+                <FaSignOutAlt />
+
+                Logout
+
+            </button>
 
         </div>
 
     );
 
 }
-
 
 export default Sidebar;

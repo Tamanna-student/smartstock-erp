@@ -1,28 +1,30 @@
 import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 
-
-function Layout({children}){
+function Layout({ children }) {
 
     return (
 
-        <div className="d-flex">
+        <div className="main-layout">
 
+            <Sidebar />
 
-            <Sidebar/>
+            <div className="main-content">
 
+                <Topbar />
 
-            <div className="p-4 flex-grow-1">
+                <div className="page-content">
 
-                {children}
+                    {children}
+
+                </div>
 
             </div>
-
 
         </div>
 
     );
 
 }
-
 
 export default Layout;

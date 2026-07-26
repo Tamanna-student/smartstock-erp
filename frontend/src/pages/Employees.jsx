@@ -213,271 +213,440 @@ if (loading) {
 
 }
 
-    return (
+return (
 
-    <div>
+<div className="w-100">
 
-        <div className="d-flex justify-content-between align-items-center mb-4">
+    {/* Header */}
 
-            <h2>
+    <div className="d-flex justify-content-between align-items-center mb-4">
 
+        <div>
+
+            <h2
+                style={{
+                    fontWeight:700,
+                    color:"#111827"
+                }}
+            >
                 Employee Management
-
             </h2>
 
-            <button
-
-                className="btn btn-primary"
-
-                onClick={() => setShowForm(!showForm)}
-
+            <p
+                style={{
+                    color:"#6B7280",
+                    marginBottom:0
+                }}
             >
+                Manage your employees and business staff.
+            </p>
 
-                Add Employee
+        </div>
 
-            </button>
+        <button
+            className="btn modern-btn-primary"
+            onClick={() => setShowForm(!showForm)}
+        >
+            + Add Employee
+        </button>
+
+    </div>
+
+
+
+    {/* Statistics */}
+
+    <div className="row g-4 mb-4">
+
+        <div className="col-lg-4">
+
+            <div className="dashboard-card">
+
+                <div className="dashboard-icon blue">
+                    👨‍💼
+                </div>
+
+                <div>
+
+                    <p className="dashboard-title">
+                        Employees
+                    </p>
+
+                    <h2>
+                        {employees.length}
+                    </h2>
+
+                </div>
+
+            </div>
 
         </div>
 
 
 
-        {
+        <div className="col-lg-4">
 
-            showForm && (
+            <div className="dashboard-card">
 
-                <div className="card shadow p-4 mb-4">
+                <div className="dashboard-icon green">
+                    🏢
+                </div>
 
-                    <h4 className="mb-3">
+                <div>
 
-                        Add Employee
+                    <p className="dashboard-title">
+                        Business
+                    </p>
 
-                    </h4>
-
-
-
-                    <input
-
-                        className="form-control mb-3"
-
-                        placeholder="Full Name"
-
-                        name="fullName"
-
-                        value={formData.fullName}
-
-                        onChange={handleChange}
-
-                    />
-
-
-
-                    <input
-
-                        className="form-control mb-3"
-
-                        placeholder="Phone Number"
-
-                        name="phone"
-
-                        value={formData.phone}
-
-                        onChange={handleChange}
-
-                    />
-
-
-
-                    <input
-
-                        className="form-control mb-3"
-
-                        placeholder="Email"
-
-                        name="email"
-
-                        type="email"
-
-                        value={formData.email}
-
-                        onChange={handleChange}
-
-                    />
-
-
-
-                    <input
-
-                        className="form-control mb-3"
-
-                        placeholder="Password"
-
-                        name="password"
-
-                        type="password"
-
-                        value={formData.password}
-
-                        onChange={handleChange}
-
-                    />
-
-
-
-                    <textarea
-
-                        className="form-control mb-3"
-
-                        placeholder="Address"
-
-                        name="address"
-
-                        value={formData.address}
-
-                        onChange={handleChange}
-
-                    />
-
-
-
-                    <button
-
-                        className="btn btn-success"
-
-                        onClick={saveEmployee}
-
-                    >
-
-                        {editMode ? "Update Employee" : "Save Employee"}
-
-                    </button>
+                    <h2>
+                        1
+                    </h2>
 
                 </div>
 
-            )
+            </div>
 
-        }
-
-
-
-        <table className="table table-bordered table-hover shadow">
-
-            <thead className="table-dark">
-
-                <tr>
-
-                    <th>Name</th>
-
-                    <th>Business</th>
-
-                    <th>Phone</th>
-
-                    <th>Email</th>
-
-                    <th>Address</th>
-
-                    <th>Action</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-                {
-    employees.length === 0 ?
-
-    (
-
-        <tr>
-
-            <td
-                colSpan="6"
-                className="text-center"
-            >
-
-                No Employees Found
-
-            </td>
-
-        </tr>
-
-    )
-
-    :
-
-    employees.map((employee) => (
-
-        <tr key={employee._id}>
-
-            <td>
-
-                {employee.fullName}
-
-            </td>
-
-            <td>
-
-                {employee.businessName}
-
-            </td>
-
-            <td>
-
-                {employee.phone}
-
-            </td>
-
-            <td>
-
-                {employee.email}
-
-            </td>
-
-            <td>
-
-                {employee.address}
-
-            </td>
-
-            <td>
-
-<button
-
-className="btn btn-warning btn-sm me-2"
-
-onClick={() => editEmployee(employee)}
-
->
-
-Edit
-
-</button>
+        </div>
 
 
-<button
 
-className="btn btn-danger btn-sm"
+        <div className="col-lg-4">
 
-onClick={() => deleteEmployee(employee._id)}
+            <div className="dashboard-card">
 
->
+                <div className="dashboard-icon orange">
+                    ✅
+                </div>
 
-Delete
+                <div>
 
-</button>
+                    <p className="dashboard-title">
+                        Active
+                    </p>
 
+                    <h2>
+                        {employees.length}
+                    </h2>
 
-</td>
+                </div>
 
-        </tr>
+            </div>
 
-    ))
-}
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
+
+
+
+    {/* Search */}
+
+    <div className="search-box mb-4">
+
+        <input
+
+            type="text"
+
+            placeholder="Search Employee..."
+
+        />
+
+    </div>
+
+
+
+    {/* Form */}
+
+    {
+
+        showForm && (
+
+            <div className="card-modern mb-4">
+
+                <h4
+                    style={{
+                        fontWeight:600,
+                        marginBottom:"25px"
+                    }}
+                >
+                    {editMode ? "Edit Employee" : "Add Employee"}
+                </h4>
+
+                <div className="row g-3">
+
+                    <div className="col-md-6">
+
+                        <input
+
+                            className="form-control modern-input"
+
+                            placeholder="Full Name"
+
+                            name="fullName"
+
+                            value={formData.fullName}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </div>
+
+
+
+                    <div className="col-md-6">
+
+                        <input
+
+                            className="form-control modern-input"
+
+                            placeholder="Phone Number"
+
+                            name="phone"
+
+                            value={formData.phone}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </div>
+
+
+
+                    <div className="col-md-6">
+
+                        <input
+
+                            className="form-control modern-input"
+
+                            placeholder="Email"
+
+                            type="email"
+
+                            name="email"
+
+                            value={formData.email}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </div>
+
+
+
+                    {
+
+                        !editMode && (
+
+                            <div className="col-md-6">
+
+                                <input
+
+                                    className="form-control modern-input"
+
+                                    placeholder="Password"
+
+                                    type="password"
+
+                                    name="password"
+
+                                    value={formData.password}
+
+                                    onChange={handleChange}
+
+                                />
+
+                            </div>
+
+                        )
+
+                    }
+
+
+
+                    <div className="col-12">
+
+                        <textarea
+
+                            className="form-control modern-input"
+
+                            rows="3"
+
+                            placeholder="Address"
+
+                            name="address"
+
+                            value={formData.address}
+
+                            onChange={handleChange}
+
+                        />
+
+                    </div>
+
+                </div>
+
+
+
+                <button
+
+                    className="btn modern-btn-success mt-4"
+
+                    onClick={saveEmployee}
+
+                >
+
+                    {
+
+                        editMode
+
+                        ?
+
+                        "Update Employee"
+
+                        :
+
+                        "Save Employee"
+
+                    }
+
+                </button>
+
+            </div>
+
+        )
+
+    }
+
+
+
+    {/* Employee Cards */}
+
+    {
+
+        employees.length===0 ?
+
+        (
+
+            <div className="card-modern text-center">
+
+                <h5
+                    style={{
+                        color:"#6B7280"
+                    }}
+                >
+                    No Employees Found
+                </h5>
+
+            </div>
+
+        )
+
+        :
+
+        <div className="row">
+
+            {
+
+                employees.map((employee)=>(
+
+                    <div
+                        className="col-lg-6 mb-4"
+                        key={employee._id}
+                    >
+
+                        <div className="card-modern h-100">
+
+                            <div className="d-flex justify-content-between">
+
+                                <div>
+
+                                    <h4
+                                        style={{
+                                            fontWeight:600
+                                        }}
+                                    >
+                                        👤 {employee.fullName}
+                                    </h4>
+
+                                    <p
+                                        className="text-muted mb-1"
+                                    >
+                                        📧 {employee.email}
+                                    </p>
+
+                                    <p
+                                        className="text-muted mb-1"
+                                    >
+                                        📞 {employee.phone}
+                                    </p>
+
+                                    <p
+                                        className="text-muted mb-1"
+                                    >
+                                        🏢 {employee.businessName}
+                                    </p>
+
+                                    <p
+                                        className="text-muted"
+                                    >
+                                        📍 {employee.address}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <hr />
+
+
+
+                            <div className="d-flex gap-2">
+
+                                <button
+
+                                    className="btn btn-warning"
+
+                                    onClick={() => editEmployee(employee)}
+
+                                >
+
+                                    Edit
+
+                                </button>
+
+
+
+                                <button
+
+                                    className="btn btn-danger"
+
+                                    onClick={() => deleteEmployee(employee._id)}
+
+                                >
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                ))
+
+            }
+
+        </div>
+
+    }
+
+</div>
 
 );
 

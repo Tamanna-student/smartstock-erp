@@ -33,6 +33,10 @@ localStorage.setItem(
     "role",
     response.data.user.role
 );
+localStorage.setItem(
+    "userName",
+    response.data.user.fullName
+);
 
 
 
@@ -52,7 +56,7 @@ localStorage.setItem(
 
 
     return (
-        <div>
+        <div className="w-100">
 
             <h2>
                 SmartStock ERP Login

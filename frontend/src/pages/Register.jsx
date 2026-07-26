@@ -85,7 +85,7 @@ function Register(){
 
     return(
 
-        <div className="container mt-5">
+        <div className="w-100">
 
             <h2>
                 SmartStock ERP - Business Registration

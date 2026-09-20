@@ -2,6 +2,19 @@ import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
+import {
+    FaBoxes,
+    FaUser,
+    FaEnvelope,
+    FaPhone,
+    FaLock,
+    FaBuilding,
+    FaMapMarkerAlt,
+    FaFileInvoice,
+    FaEye,
+    FaEyeSlash
+} from "react-icons/fa";
+
 
 function Register(){
 
@@ -20,7 +33,8 @@ function Register(){
         gstNumber:""
 
     });
-    const [otherBusiness,setOtherBusiness] = useState("");
+   const [otherBusiness] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
 
     const handleChange = (e)=>{
@@ -83,146 +97,338 @@ function Register(){
 
 
 
-    return(
+   return (
 
-        <div className="w-100">
+<div className="login-page">
 
-            <h2>
-                SmartStock ERP - Business Registration
-            </h2>
+<div className="login-left">
+
+<div>
+
+<div className="login-logo">
+
+<FaBoxes/>
+
+</div>
+
+<h1>
+
+SmartStock ERP
+
+</h1>
+
+<p>
+
+Create Your Business Account
+
+</p>
+
+<span>
+
+Register your business and start managing
+products, inventory, billing and employees
+from one dashboard.
+
+</span>
+
+</div>
+
+</div>
 
 
-            <form onSubmit={handleRegister}>
 
 
-                <input
-                className="form-control mb-2"
-                name="fullName"
-                placeholder="Owner Name"
-                onChange={handleChange}
-                />
+
+<div className="login-right">
+
+<form
+className="login-card"
+onSubmit={handleRegister}
+>
+
+<h2>
+
+Create Account 🚀
+
+</h2>
+
+<p>
+
+Start your SmartStock journey
+
+</p>
 
 
-                <input
-                className="form-control mb-2"
-                name="businessName"
-                placeholder="Business Name"
-                onChange={handleChange}
-                />
+
+<div className="input-box">
+
+<FaUser className="input-icon"/>
+
+<input
+type="text"
+placeholder="Owner Name"
+name="fullName"
+value={formData.fullName}
+onChange={handleChange}
+required
+/>
+
+</div>
 
 
-                <select
-className="form-control mb-2"
+
+
+
+<div className="input-box">
+
+<FaBuilding className="input-icon"/>
+
+<input
+type="text"
+placeholder="Business Name"
+name="businessName"
+value={formData.businessName}
+onChange={handleChange}
+required
+/>
+
+</div>
+
+
+
+
+
+<div className="input-box">
+
+<FaBuilding className="input-icon"/>
+
+<select
 name="businessType"
 value={formData.businessType}
 onChange={handleChange}
+required
 >
 
 <option value="">
-Select Business Type
+
+Business Type
+
 </option>
 
-<option value="Retail">
-Retail
+<option>
+
+Retail Shop
+
 </option>
 
-<option value="Wholesale">
+<option>
+
 Wholesale
+
 </option>
 
-<option value="Manufacturing">
-Manufacturing
+<option>
+
+Medical Store
+
 </option>
 
-<option value="Restaurant">
-Restaurant
+<option>
+
+Electronics
+
 </option>
 
-<option value="Pharmacy">
-Pharmacy
+<option>
+
+Clothing
+
 </option>
 
-<option value="Service">
-Service
+<option>
+
+Grocery
+
 </option>
 
-<option value="Other">
+<option>
+
 Other
+
 </option>
 
 </select>
-{
-formData.businessType === "Other" && (
+
+</div>
+
+
+
+
+
+<div className="input-box">
+
+<FaPhone className="input-icon"/>
 
 <input
-
-className="form-control mb-2"
-
-placeholder="Enter Business Type"
-
-value={otherBusiness}
-
-onChange={(e)=>setOtherBusiness(e.target.value)}
-
+type="text"
+placeholder="Phone Number"
+name="phone"
+value={formData.phone}
+onChange={handleChange}
+required
 />
 
-)
+</div>
+
+
+
+
+
+<div className="input-box">
+
+<FaEnvelope className="input-icon"/>
+
+<input
+type="email"
+placeholder="Email Address"
+name="email"
+value={formData.email}
+onChange={handleChange}
+required
+/>
+
+</div>
+
+
+
+
+
+<div className="input-box">
+
+<FaLock className="input-icon"/>
+
+<input
+type={showPassword ? "text" : "password"}
+placeholder="Password"
+name="password"
+value={formData.password}
+onChange={handleChange}
+required
+/>
+
+<span
+className="password-toggle"
+onClick={()=>
+setShowPassword(!showPassword)
+}
+>
+
+{
+
+showPassword
+
+?
+
+<FaEyeSlash/>
+
+:
+
+<FaEye/>
+
 }
 
-                <input
-                className="form-control mb-2"
-                name="phone"
-                placeholder="Phone"
-                onChange={handleChange}
-                />
+</span>
+
+</div>
 
 
-                <input
-                className="form-control mb-2"
-                name="email"
-                placeholder="Email"
-                type="email"
-                onChange={handleChange}
-                />
 
 
-                <input
-                className="form-control mb-2"
-                name="password"
-                placeholder="Password"
-                type="password"
-                onChange={handleChange}
-                />
+
+<div className="input-box">
+
+<FaMapMarkerAlt className="input-icon"/>
+
+<input
+type="text"
+placeholder="Address"
+name="address"
+value={formData.address}
+onChange={handleChange}
+/>
+
+</div>
 
 
-                <textarea
-                className="form-control mb-2"
-                name="address"
-                placeholder="Address"
-                onChange={handleChange}
-                />
 
 
-                <input
-                className="form-control mb-2"
-                name="gstNumber"
-                placeholder="GST Number (Optional)"
-                onChange={handleChange}
-                />
+
+<div className="input-box">
+
+<FaFileInvoice className="input-icon"/>
+
+<input
+type="text"
+placeholder="GST Number (Optional)"
+name="gstNumber"
+value={formData.gstNumber}
+onChange={handleChange}
+/>
+
+</div>
 
 
-                <button className="btn btn-success">
-
-                    Create Account
-
-                </button>
 
 
-            </form>
 
-        </div>
+<button
+className="login-btn"
+type="submit"
+>
 
-    );
+Create Account
+
+</button>
+
+
+
+
+
+<div className="login-footer">
+
+<span>
+
+Already have an account?
+
+</span>
+
+<button
+
+type="button"
+
+className="register-link"
+
+onClick={()=>
+
+navigate("/")
+
+}
+
+>
+
+Login
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+);
 
 }
 

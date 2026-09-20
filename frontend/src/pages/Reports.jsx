@@ -19,48 +19,7 @@ const [searchedBills, setSearchedBills] = useState([]);
 
     const [totalBills, setTotalBills] = useState(0);
 
-    const getReports = async () => {
-
-        try {
-
-            const salesResponse =
-                await API.get("/reports/sales");
-
-            const revenueResponse =
-                await API.get("/reports/revenue");
-
-            const inventoryResponse =
-                await API.get("/reports/inventory");
-
-            setSales(salesResponse.data.bills);
-
-            setRevenue(
-                revenueResponse.data.totalRevenue
-            );
-
-            setTotalBills(
-                revenueResponse.data.totalBills
-            );
-
-            setInventory(
-                inventoryResponse.data.inventory
-            );
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-        }
-
-        finally {
-
-            setLoading(false);
-
-        }
-
-    };
+    
     const searchProducts = async () => {
 
     try {
@@ -107,11 +66,50 @@ const searchBills = async () => {
 
 };
 
-    useEffect(() => {
+   useEffect(() => {
+    let isMounted = true;
 
-        getReports();
+    const loadReports = async () => {
+        try {
+            const salesResponse =
+                await API.get("/reports/sales");
 
-    }, []);
+            const revenueResponse =
+                await API.get("/reports/revenue");
+
+            const inventoryResponse =
+                await API.get("/reports/inventory");
+
+            if (!isMounted) return;
+
+            setSales(salesResponse.data.bills);
+
+            setRevenue(
+                revenueResponse.data.totalRevenue
+            );
+
+            setTotalBills(
+                revenueResponse.data.totalBills
+            );
+
+            setInventory(
+                inventoryResponse.data.inventory
+            );
+        } catch (error) {
+            console.log(error);
+        } finally {
+            if (isMounted) {
+                setLoading(false);
+            }
+        }
+    };
+
+    loadReports();
+
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
     if (loading) {
 

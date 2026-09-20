@@ -1,105 +1,150 @@
 const Bill = require("../models/Bill");
 const Inventory = require("../models/Inventory");
+const Product = require("../models/Product");
+const Counter = require("../models/Counter");
+const mongoose = require("mongoose");
 const createBill = async (req, res) => {
+    const session = await mongoose.startSession();
 
     try {
         const ownerId =
-    req.user.role === "admin"
-        ? req.user.id
-        : req.user.ownerId;
+            req.user.role === "admin"
+                ? req.user.id
+                : req.user.ownerId;
 
         const { customerName, items } = req.body;
 
-        if (!customerName || !items || items.length === 0) {
+        if (!customerName || !customerName.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Customer name and items are required"
+                message: "Customer name is required",
             });
         }
 
-       const lastBill = await Bill.findOne({
-    createdBy: ownerId
-}).sort({ createdAt: -1 });
+        if (!Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "At least one item is required",
+            });
+        }
 
-let invoiceNumber = "INV-000001";
+        let createdBill;
 
-if (lastBill && lastBill.invoiceNumber) {
+        await session.withTransaction(async () => {
 
-    const lastNumber = parseInt(
-        lastBill.invoiceNumber.split("-")[1]
-    );
-
-    invoiceNumber =
-        "INV-" +
-        String(lastNumber + 1).padStart(6, "0");
-
-}
-      
-        let totalAmount = 0;
-
-        items.forEach(item => {
-            totalAmount += item.price * item.quantity;
-        });
-
-        // Check stock and update inventory
-for (const item of items) {
-
-    const inventory = await Inventory.findOne({
-    product: item.product,
-    updatedBy: ownerId,
-});
-
-    if (!inventory) {
-        return res.status(404).json({
-            success: false,
-            message: "Inventory not found for product",
-        });
+            // Generate invoice number
+           // Generate invoice number using atomic counter
+const counter = await Counter.findOneAndUpdate(
+    { _id: "invoice" },
+    { $inc: { seq: 1 } },
+    {
+        new: true,
+        upsert: true,
+        session,
     }
+);
 
-    if (inventory.currentStock < item.quantity) {
-        return res.status(400).json({
-            success: false,
-            message: `Only ${inventory.currentStock} item(s) available in stock.`,
+const invoiceNumber =
+    "INV-" + String(counter.seq).padStart(6, "0");
+
+            let totalAmount = 0;
+            const verifiedItems = [];
+
+            // Verify products, prices and stock
+            for (const item of items) {
+
+                if (
+                    !item.product ||
+                    !Number.isInteger(Number(item.quantity))
+                ) {
+                    throw new Error("Invalid product or quantity");
+                }
+
+                const quantity = Number(item.quantity);
+
+                if (quantity < 1) {
+                    throw new Error("Quantity must be at least 1");
+                }
+
+                // Get official product from database
+                const product = await Product.findOne({
+                    _id: item.product,
+                    createdBy: ownerId,
+                }).session(session);
+
+                if (!product) {
+                    throw new Error("Product not found");
+                }
+
+                // Get inventory
+                const inventory = await Inventory.findOne({
+                    product: product._id,
+                    updatedBy: ownerId,
+                }).session(session);
+
+                if (!inventory) {
+                    throw new Error(
+                        `Inventory not found for ${product.productName}`
+                    );
+                }
+
+                if (inventory.currentStock < quantity) {
+                    throw new Error(
+                        `Only ${inventory.currentStock} item(s) available in stock for ${product.productName}.`
+                    );
+                }
+
+                // Use official database price
+                const officialPrice = Number(product.price);
+                const itemTotal = officialPrice * quantity;
+
+                totalAmount += itemTotal;
+
+                verifiedItems.push({
+                    product: product._id,
+                    quantity,
+                    price: officialPrice,
+                });
+
+                // Deduct stock inside transaction
+                inventory.currentStock -= quantity;
+                inventory.lastUpdated = Date.now();
+
+                await inventory.save({ session });
+            }
+
+            // Create bill inside same transaction
+            const bill = new Bill({
+                invoiceNumber,
+                customerName: customerName.trim(),
+                items: verifiedItems,
+                totalAmount,
+                createdBy: ownerId,
+            });
+
+            await bill.save({ session });
+
+            createdBill = bill;
         });
-    }
-
-    inventory.currentStock -= item.quantity;
-    inventory.lastUpdated = Date.now();
-
-    await inventory.save();
-}
-
-       const bill = await Bill.create({
-
-    invoiceNumber,
-
-    customerName,
-
-    items,
-
-    totalAmount,
-
-    createdBy:ownerId
-
-});
 
         res.status(201).json({
             success: true,
             message: "Bill created successfully",
-            bill
+            bill: createdBill,
         });
 
     } catch (error) {
 
         console.error(error);
 
-        res.status(500).json({
+        res.status(400).json({
             success: false,
-            message: "Server Error"
+            message: error.message || "Unable to create bill",
         });
 
+    } finally {
+        await session.endSession();
     }
-
 };
 // Get All Bills
 const getBills = async (req, res) => {

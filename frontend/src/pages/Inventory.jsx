@@ -11,31 +11,33 @@ function Inventory() {
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const getInventory = async () => {
+   
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadInventory = async () => {
         try {
-
             const response = await API.get("/inventory");
 
+            if (!isMounted) return;
+
             setInventory(response.data.inventory);
-
         } catch (error) {
-
             console.log(error);
-
         } finally {
-
-            setLoading(false);
-
+            if (isMounted) {
+                setLoading(false);
+            }
         }
-
     };
 
-    useEffect(() => {
+    loadInventory();
 
-        getInventory();
-
-    }, []);
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
     if (loading) {
 

@@ -29,29 +29,34 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
 
 
-    const getDashboard = async () => {
+   
 
+
+   useEffect(() => {
+    let isMounted = true;
+
+    const loadDashboard = async () => {
         try {
-
             const response = await API.get("/dashboard");
 
+            if (!isMounted) return;
+
             setDashboard(response.data.dashboard);
-
         } catch (error) {
-
             console.log(error);
-
         } finally {
-
-            setLoading(false);
-
+            if (isMounted) {
+                setLoading(false);
+            }
         }
     };
 
+    loadDashboard();
 
-    useEffect(() => {
-        getDashboard();
-    }, []);
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
 
 

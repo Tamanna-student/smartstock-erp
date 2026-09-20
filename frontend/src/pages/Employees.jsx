@@ -65,13 +65,31 @@ const resetForm = () => {
 };
 
 
-
 useEffect(() => {
+    let isMounted = true;
 
-    getEmployees();
+    const loadEmployees = async () => {
+        try {
+            const response = await API.get("/employees");
 
+            if (!isMounted) return;
+
+            setEmployees(response.data.employees);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            if (isMounted) {
+                setLoading(false);
+            }
+        }
+    };
+
+    loadEmployees();
+
+    return () => {
+        isMounted = false;
+    };
 }, []);
-
 
 
 

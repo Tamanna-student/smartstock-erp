@@ -27,23 +27,6 @@ function Billing() {
 
 
 
-    const getProducts = async () => {
-
-        try {
-
-            const response = await API.get("/products");
-
-            setProducts(response.data.products);
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-        }
-
-    };
 
 
 
@@ -73,13 +56,33 @@ function Billing() {
 
 
 
-    useEffect(() => {
+useEffect(() => {
+    let isMounted = true;
 
-        getProducts();
+    const loadBillingData = async () => {
+        try {
+            const productsResponse = await API.get("/products");
+            const billsResponse = await API.get("/bills");
 
-        getBills();
+            if (!isMounted) return;
 
-    }, []);
+            setProducts(productsResponse.data.products);
+            setBills(billsResponse.data.bills);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            if (isMounted) {
+                setLoading(false);
+            }
+        }
+    };
+
+    loadBillingData();
+
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
 
 
@@ -269,25 +272,10 @@ function Billing() {
 
                     items:
 
-                        billItems.map(
-
-                            (item) => ({
-
-                                product:
-
-                                    item.product,
-
-                                quantity:
-
-                                    item.quantity,
-
-                                price:
-
-                                    item.price
-
-                            })
-
-                        )
+                         billItems.map((item) => ({
+    product: item.product,
+    quantity: item.quantity
+}))
 
                 }
 

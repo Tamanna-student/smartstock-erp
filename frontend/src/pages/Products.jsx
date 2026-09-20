@@ -57,11 +57,31 @@ const [editId, setEditId] = useState("");
 
 
 
-    useEffect(()=>{
+useEffect(() => {
+    let isMounted = true;
 
-        getProducts();
+    const loadProducts = async () => {
+        try {
+            const response = await API.get("/products");
 
-    },[]);
+            if (!isMounted) return;
+
+            setProducts(response.data.products);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            if (isMounted) {
+                setLoading(false);
+            }
+        }
+    };
+
+    loadProducts();
+
+    return () => {
+        isMounted = false;
+    };
+}, []);
 
 
 

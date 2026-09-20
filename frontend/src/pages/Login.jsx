@@ -1,12 +1,20 @@
 import { useState } from "react";
 import API from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import {
+    FaEnvelope,
+    FaLock,
+    FaEye,
+    FaEyeSlash,
+    FaBoxes
+} from "react-icons/fa";
 
 
 function Login() {
 const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -56,56 +64,211 @@ localStorage.setItem(
 
 
     return (
-        <div className="w-100">
 
-            <h2>
-                SmartStock ERP Login
-            </h2>
+<div className="login-page">
 
+    <div className="login-left">
 
-            <form onSubmit={handleLogin}>
+        <div>
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e)=>setEmail(e.target.value)}
-                />
+            <div className="login-logo">
 
+                <FaBoxes />
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                />
+            </div>
 
+            <h1>
 
-                <button type="submit">
-                    Login
-                </button>
+                SmartStock ERP
 
-                <p>
+            </h1>
 
-New Business Owner?
+            <p>
 
-<button
-className="btn btn-link"
-onClick={()=>navigate("/register")}
->
+                Inventory Management System
 
-Create Account
+            </p>
 
-</button>
+            <span>
 
-</p>
+                Manage Products, Billing, Inventory & Employees
+                from one powerful dashboard.
 
-
-            </form>
-
+            </span>
 
         </div>
-    );
+
+    </div>
+
+
+
+
+
+    <div className="login-right">
+
+        <form
+            className="login-card"
+            onSubmit={handleLogin}
+        >
+
+            <h2>
+
+                Welcome Back 👋
+
+            </h2>
+
+            <p>
+
+                Login to continue
+
+            </p>
+
+
+
+
+
+            <div className="input-box">
+
+                <FaEnvelope className="input-icon"/>
+
+                <input
+
+                    type="email"
+
+                    placeholder="Email Address"
+
+                    value={email}
+
+                    onChange={(e)=>
+
+                        setEmail(e.target.value)
+
+                    }
+
+                    required
+
+                />
+
+            </div>
+
+
+
+
+
+            <div className="input-box">
+
+                <FaLock className="input-icon"/>
+
+                <input
+
+                    type={
+
+                        showPassword
+
+                        ? "text"
+
+                        : "password"
+
+                    }
+
+                    placeholder="Password"
+
+                    value={password}
+
+                    onChange={(e)=>
+
+                        setPassword(e.target.value)
+
+                    }
+
+                    required
+
+                />
+
+
+
+                <span
+
+                    className="password-toggle"
+
+                    onClick={()=>
+
+                        setShowPassword(!showPassword)
+
+                    }
+
+                >
+
+                    {
+
+                        showPassword
+
+                        ?
+
+                        <FaEyeSlash/>
+
+                        :
+
+                        <FaEye/>
+
+                    }
+
+                </span>
+
+            </div>
+
+
+
+
+
+            <button
+                type="submit"
+                className="login-btn"
+            >
+
+                Login
+
+            </button>
+
+
+
+
+
+            <div className="login-footer">
+
+                <span>
+
+                    New Business Owner?
+
+                </span>
+
+                <button
+
+                    type="button"
+
+                    className="register-link"
+
+                    onClick={()=>
+
+                        navigate("/register")
+
+                    }
+
+                >
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+);
 }
 
 
